@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"  
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:jms="http://www.springframework.org/schema/jms"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans  
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/jms
+		http://www.springframework.org/schema/jms/spring-jms.xsd
+		http://www.springframework.org/schema/context
+    	http://www.springframework.org/schema/context/spring-context.xsd
+        "> 
+    <!-- 注解注入bean -->
+    <context:component-scan base-package="com.hss">
+          <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
+    
+    <context:property-placeholder location="classpath:mail-config.properties"/>
+   
+    <!-- spring mail demo end ############################################## -->
+    <bean id="sender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+       <property name="host" value="${mail.host}"></property>
+       <property name="username" value="${mail.username}"></property>
+       <property name="password" value="${mail.password}"></property>
+       <property name="defaultEncoding" value="${mail.defaultEncoding}"></property>
+       <property name="javaMailProperties">
+           <props>
+              <prop key="mail.smtp.auth">true</prop>
+              <prop key="mail.smtp.timeout">30000</prop>
+              <prop key="mail.smtp.socketFactory.class">javax.net.ssl.SSLSocketFactory</prop>
+              <!-- 如果是网易邮箱， mail.smtp.starttls.enable 设置为 false-->  
+              <prop key="mail.smtp.starttls.enable">true</prop>
+           </props>
+       </property>
+    </bean>
+    
+    <bean id="mailMessage" class="org.springframework.mail.SimpleMailMessage" scope="prototype">
+    	<property name="from" value="${mail.username}"></property>
+    </bean>
+    
+    <bean id="pool" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+    	<!-- 初始容量，核心容量，最小线程数 -->
+    	<property name="corePoolSize" value="4"></property>
+    	<!-- 空闲时间，单位秒 -->
+    	<property name="keepAliveSeconds" value="60"></property>
+    	<!-- 最大容量 -->
+    	<property name="maxPoolSize" value="32"></property>
+    	<!-- 任务队列容量 -->
+    	<property name="queueCapacity" value="256"></property>
+    </bean>
+    
+    <import resource="applicationContext-jms.xml"/>
+</beans>

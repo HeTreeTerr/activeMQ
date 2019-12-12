@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
+   
+   <!-- 启动spring的容器 -->
+  <context-param>
+      <param-name>contextConfigLocation</param-name>
+      <param-value>classpath:applicationContext-jms.xml</param-value>
+  </context-param>
+  
+   <!-- springmvc的前端拦截器，拦截所有请求 -->
+  <servlet>
+     <servlet-name>dispatcherServlet</servlet-name>
+     <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+     <init-param>
+     	<param-name>contextConfigLocation</param-name>
+     	<param-value>classpath:spring-mvc.xml</param-value>
+     </init-param>
+     <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+      <servlet-name>dispatcherServlet</servlet-name>
+      <url-pattern>/</url-pattern>
+  </servlet-mapping>
+  
+  <!-- 启动springmvc文件，文件路径和名称为默认值，不需要写入 -->
+  <listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+  
+  <!-- 字符编码 放在所有过滤器之前 -->
+  <filter>
+  <filter-name>CharacterEncodingFilter</filter-name>
+        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+        <!-- 指定要用的属性 -->
+         <init-param>
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+         </init-param>
+         <init-param>
+            <param-name>forceRequestEncoding</param-name>
+            <param-value>true</param-value>
+         </init-param>
+         <init-param>
+            <param-name>forceResponseEncoding</param-name>
+            <param-value>true</param-value>
+         </init-param>
+   </filter>
+   <filter-mapping>
+          <filter-name>CharacterEncodingFilter</filter-name>
+          <url-pattern>/*</url-pattern>
+     </filter-mapping>
+     
+    <!-- 使用rest风格,将普通的post转为其他 -->
+    <filter>
+      <filter-name>HiddenHttpMethodFilter</filter-name>
+      
+      <filter-class>org.springframework.web.filter.HiddenHttpMethodFilter</filter-class>
+    </filter>
+    <filter-mapping>
+       <filter-name>HiddenHttpMethodFilter</filter-name>
+       <url-pattern>/*</url-pattern>
+        
+    </filter-mapping>
+     <!--接收put和delete的请求参数  -->
+      <filter>
+        <filter-name>HttpPutFormContentFilter</filter-name>
+        <filter-class>org.springframework.web.filter.HttpPutFormContentFilter</filter-class>
+     </filter>
+     <filter-mapping>
+        <filter-name>HttpPutFormContentFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+     </filter-mapping>
+     
+     <welcome-file-list>
+     	<welcome-file>/index.jsp</welcome-file>
+   </welcome-file-list>
+</web-app>

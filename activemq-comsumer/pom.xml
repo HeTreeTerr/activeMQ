@@ -1,0 +1,92 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.hss</groupId>
+  <artifactId>activemq-comsumer</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  
+  <properties>
+      <springframework>4.3.10.RELEASE</springframework>
+  </properties>
+  
+  <dependencies>
+  	<!-- activemq客户端 -->
+     <dependency>
+         <groupId>org.apache.activemq</groupId>
+         <artifactId>activemq-all</artifactId>
+         <version>5.15.0</version>
+     </dependency>
+     
+    <!-- xbean -->
+    <dependency>
+	    <groupId>org.apache.xbean</groupId>
+	    <artifactId>xbean-spring</artifactId>
+	    <version>4.5</version>
+    </dependency>
+    
+  	<!-- spring -->
+  	<dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-jms</artifactId>
+        <version>${springframework}</version>
+    </dependency>
+    
+  	<dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-core</artifactId>
+        <version>${springframework}</version>
+    </dependency>
+    
+    <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-context</artifactId>
+        <version>${springframework}</version>
+    </dependency>
+    
+    <dependency>
+         <groupId>org.springframework</groupId>
+         <artifactId>spring-context-support</artifactId>
+         <version>${springframework}</version>
+    </dependency>
+    
+    <!--spring切面 https://mvnrepository.com/artifact/org.springframework/spring-aspects -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-aspects</artifactId>
+      <version>${springframework}</version>
+    </dependency>
+    
+    <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-tx</artifactId>
+        <version>${springframework}</version>
+    </dependency>
+    
+    <!-- spring-junit-test -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-test</artifactId>
+      <version>${springframework}</version>
+      <scope>test</scope>    
+    </dependency>
+    
+    <dependency>
+         <groupId>javax.mail</groupId>
+         <artifactId>mail</artifactId>
+         <version>1.4.7</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>3.3.2</version>
+    </dependency>
+     
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.12</version>
+      <scope>test</scope>
+    </dependency>
+    
+  </dependencies>
+</project>

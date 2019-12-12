@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" 
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:jms="http://www.springframework.org/schema/jms"
+	xmlns:amq="http://activemq.apache.org/schema/core"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context.xsd
+    http://www.springframework.org/schema/aop 
+    http://www.springframework.org/schema/aop/spring-aop.xsd
+    http://www.springframework.org/schema/tx
+    http://www.springframework.org/schema/tx/spring-tx.xsd
+    http://www.springframework.org/schema/jms
+	http://www.springframework.org/schema/jms/spring-jms.xsd
+	http://activemq.apache.org/schema/core
+	http://activemq.apache.org/schema/core/activemq-core.xsd
+	">
+
+	<!-- 配置service的扫描和jms相关资源 -->
+	
+	<!-- 配置ActiveMQConnectionFactory对象。 -->
+	<amq:connectionFactory brokerURL="tcp://127.0.0.1:61616"
+	userName="admin" password="admin" id="amqConnectionFactory"></amq:connectionFactory>
+	
+	<!-- 配置池化的ConnectionFactory。为连接ActiveMQ的ConnectionFactory提供连接池 -->
+	<bean id="pooledConnectionFactory"
+		class="org.apache.activemq.pool.PooledConnectionFactoryBean">
+		<property name="connectionFactory" ref="amqConnectionFactory"></property>
+		<property name="maxConnections" value="10"></property>
+	</bean>
+	
+	<!-- 配置有缓存的connectionFactory，session的缓存大小可以定制。 -->
+	<bean id="connectionFactory"
+		class="org.springframework.jms.connection.CachingConnectionFactory">
+		<!-- 目标ConnectionFactory对应真实的可以产生JMS Connection的ConnectionFactory --> 
+		<property name="targetConnectionFactory" ref="pooledConnectionFactory"></property>
+		<!-- Session缓存数量 ，设置一次性可以发或者接收多少个消息-->
+		<property name="sessionCacheSize" value="3"></property>
+	</bean>
+	
+	<!-- JmsTemplate配置 -->
+	<bean id="template" class="org.springframework.jms.core.JmsTemplate">
+		<!-- 给定连接工厂，必须是spring创建的连接工厂 -->
+		<property name="connectionFactory" ref="connectionFactory"></property>
+		<!-- 可选 - 默认目的地命名 -->
+		<property name="defaultDestinationName" value="test-spring"></property>
+	</bean>
+	
+	<!-- 注解注入bean -->
+    <context:component-scan base-package="com.hss">
+          <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
+</beans>

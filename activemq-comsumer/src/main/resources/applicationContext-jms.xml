@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" 
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:jms="http://www.springframework.org/schema/jms"
+	xmlns:amq="http://activemq.apache.org/schema/core"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context.xsd
+    http://www.springframework.org/schema/aop 
+    http://www.springframework.org/schema/aop/spring-aop.xsd
+    http://www.springframework.org/schema/tx
+    http://www.springframework.org/schema/tx/spring-tx.xsd
+    http://www.springframework.org/schema/jms
+	http://www.springframework.org/schema/jms/spring-jms.xsd
+	http://activemq.apache.org/schema/core
+	http://activemq.apache.org/schema/core/activemq-core.xsd
+	">
+
+	<!-- 配置service的扫描和jms相关资源 -->
+	
+	<!-- 配置ActiveMQConnectionFactory对象。 -->
+	<amq:connectionFactory brokerURL="tcp://127.0.0.1:61616"
+	userName="admin" password="admin" trustAllPackages="true" id="amqConnectionFactory"></amq:connectionFactory>
+	
+	<!-- spring管理JMS相关代码的时候，必须依赖jms标签库，spring-jms提供的标签库 -->
+	<!-- 定义spring-jms中的连接工厂 
+		CachingConnectionFactory - spring框架提供的连接工厂对象，不能真正的访问mom容器。
+		类似一个工厂的代理对象，需要提供一个真实工厂，实现mom容器的连接访问。
+	-->
+	<bean id="connectionFactory"
+		class="org.springframework.jms.connection.CachingConnectionFactory">
+		<!-- 目标ConnectionFactory对应真实的可以产生JMS Connection的ConnectionFactory --> 
+		<property name="targetConnectionFactory" ref="amqConnectionFactory"></property>
+		<!-- Session缓存数量 ，设置一次性可以发或者接收多少个消息-->
+		<property name="sessionCacheSize" value="3"></property>
+	</bean>
+	
+	
+	<!-- 注册监听器 -->
+	<!-- 开始注册监听：
+		需要的参数有：
+		acknowledge - 消息确认机制
+		container-type - 容器类型，默认为
+		DefaultContainerType SingleContainerType
+		destination-type - 目的地类型，使用队列作为目的地。
+		connection-factory - 连接工厂，spring-jms使用的连接工厂，必须是spring自主
+		创建的，不能使用第三方创建的工程。如：ActiveMQConnectionFactory. -->
+	<jms:listener-container acknowledge="auto" container-type="default"
+		destination-type="queue" connection-factory="connectionFactory">
+		<!-- 监听容器中注册的某监听对象
+			destination - 设置目的地命名 -->
+			<jms:listener destination="test-spring" ref="myListener"/>
+	</jms:listener-container>
+</beans>
