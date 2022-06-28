@@ -1,4 +1,4 @@
-package com.hss.Exception;
+package com.hss.exception;
 
 import javax.jms.JMSException;
 

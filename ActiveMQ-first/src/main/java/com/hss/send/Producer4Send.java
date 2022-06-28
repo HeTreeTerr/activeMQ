@@ -13,7 +13,7 @@ import javax.jms.Session;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 
-import com.hss.Exception.InitJMSException;
+import com.hss.exception.InitJMSException;
 
 public class Producer4Send {
 	
